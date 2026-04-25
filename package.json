@@ -1,0 +1,8 @@
+{
+  "name": "leaan-monitor",
+  "version": "1.0.0",
+  "main": "leaan-monitor.js",
+  "scripts": {
+    "start": "node leaan-monitor.js"
+  }
+}
