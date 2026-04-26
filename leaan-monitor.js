@@ -2,11 +2,10 @@ const https = require('https');
 const http = require('http');
 
 // ── הגדרות ──────────────────────────────────────────────
-const KEYWORD       = 'ביתר מכבי';        // מה לחפש באתר
-const INTERVAL_MIN  = 1;             // כמה דקות בין בדיקות
-const TARGET_URL    = 'https://www.leaan.co.il/';
+const KEYWORD       = 'מכבי';
+const INTERVAL_MIN  = 1;
+const TARGET_URL    = 'https://www.leaan.co.il/category/%D7%91%D7%99%D7%AA%D7%A8-%D7%99%D7%A8%D7%95%D7%A9%D7%9C%D7%99%D7%9D';
 
-// טלגרם (השאר ריק אם עדיין אין)
 const TELEGRAM_TOKEN   = '8476277037:AAEuSeDkBdQ-ANOdWptnjY_oq9hAtINprVk';
 const TELEGRAM_CHAT_ID = '6890940548';
 // ────────────────────────────────────────────────────────
@@ -33,7 +32,6 @@ function fetchPage(url) {
 }
 
 function sendTelegram(message) {
-  if (!TELEGRAM_TOKEN || !TELEGRAM_CHAT_ID) return;
   const text = encodeURIComponent(message);
   const url  = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${text}`;
   https.get(url, res => {
@@ -43,7 +41,6 @@ function sendTelegram(message) {
 }
 
 function playBeep() {
-  // beep על Windows דרך PowerShell
   const { exec } = require('child_process');
   for (let i = 0; i < 5; i++) {
     setTimeout(() => {
@@ -55,18 +52,18 @@ function playBeep() {
 async function check() {
   if (found) return;
   checkCount++;
-  log(`🔍 בדיקה #${checkCount} — מחפש "${KEYWORD}" ב-${TARGET_URL}`);
+  log(`🔍 בדיקה #${checkCount} — מחפש "${KEYWORD}" בעמוד ביתר ירושלים`);
 
   try {
     const html = await fetchPage(TARGET_URL);
 
-    if (html.toLowerCase().includes(KEYWORD.toLowerCase())) {
-      log('🎉🎉🎉  נמצא! כרטיסים עלו למכירה!');
+    if (html.includes(KEYWORD)) {
+      log('🎉🎉🎉  נמצא! כרטיסים לביתר-מכבי עלו למכירה!');
       found = true;
       clearInterval(intervalId);
 
       playBeep();
-      sendTelegram(`🎟️ נמצאו כרטיסים!\n"${KEYWORD}" מופיע באתר לאן.\nהיכנס עכשיו: ${TARGET_URL}`);
+      sendTelegram(`🎟️ נמצאו כרטיסים!\nביתר ירושלים נגד מכבי תל אביב עלה למכירה!\nהיכנס עכשיו: https://www.leaan.co.il/category/ביתר-ירושלים`);
 
     } else {
       log(`😴 לא נמצא עדיין. בדיקה הבאה בעוד ${INTERVAL_MIN} דקה.`);
@@ -79,12 +76,13 @@ async function check() {
 
 // ── הפעלה ────────────────────────────────────────────────
 log('▶  מוניטור לאן מופעל');
+log(`   עמוד: ביתר ירושלים`);
 log(`   מחפש: "${KEYWORD}"`);
 log(`   תדירות: כל ${INTERVAL_MIN} דקה`);
 log(`   טלגרם: ✅ מוגדר`);
 log('─────────────────────────────────');
 
-sendTelegram('✅ מוניטור לאן הופעל!\nאקבל התראה כשביתר ירושלים יעלה למכירה.');
+sendTelegram('✅ מוניטור לאן הופעל!\nמחפש כרטיסים לביתר ירושלים נגד מכבי תל אביב.');
 
-check(); // בדיקה מיידית
+check();
 const intervalId = setInterval(check, INTERVAL_MIN * 60 * 1000);
