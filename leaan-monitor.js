@@ -2,7 +2,7 @@ const https = require('https');
 const http = require('http');
 
 // ── הגדרות ──────────────────────────────────────────────
-const KEYWORD       = 'מכבי';
+const KEYWORD       = '02/05/2026';
 const INTERVAL_MIN  = 1;
 const TARGET_URL    = 'https://www.leaan.co.il/category/%D7%91%D7%99%D7%AA%D7%A8-%D7%99%D7%A8%D7%95%D7%A9%D7%9C%D7%99%D7%9D';
 
@@ -58,12 +58,12 @@ async function check() {
     const html = await fetchPage(TARGET_URL);
 
     if (html.includes(KEYWORD)) {
-      log('🎉🎉🎉  נמצא! כרטיסים לביתר-מכבי עלו למכירה!');
+      log('🎉🎉🎉  נמצא! כרטיסים לביתר-מכבי 02/05 עלו למכירה!');
       found = true;
       clearInterval(intervalId);
 
       playBeep();
-      sendTelegram(`🎟️ נמצאו כרטיסים!\nביתר ירושלים נגד מכבי תל אביב עלה למכירה!\nהיכנס עכשיו: https://www.leaan.co.il/category/ביתר-ירושלים`);
+      sendTelegram(`🎟️ נמצאו כרטיסים!\nביתר ירושלים נגד מכבי תל אביב (02/05/2026) עלה למכירה!\nהיכנס עכשיו: https://www.leaan.co.il/category/ביתר-ירושלים`);
 
     } else {
       log(`😴 לא נמצא עדיין. בדיקה הבאה בעוד ${INTERVAL_MIN} דקה.`);
@@ -82,7 +82,7 @@ log(`   תדירות: כל ${INTERVAL_MIN} דקה`);
 log(`   טלגרם: ✅ מוגדר`);
 log('─────────────────────────────────');
 
-sendTelegram('✅ מוניטור לאן הופעל!\nמחפש כרטיסים לביתר ירושלים נגד מכבי תל אביב.');
+sendTelegram('✅ מוניטור לאן הופעל!\nמחפש כרטיסים לביתר ירושלים נגד מכבי תל אביב (02/05/2026).');
 
 check();
 const intervalId = setInterval(check, INTERVAL_MIN * 60 * 1000);
